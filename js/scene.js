@@ -38,7 +38,7 @@ function createScene() {
 }
 
 function createCamera() {
-  return new THREE.PerspectiveCamera(32, innerWidth / innerHeight, 0.05, 40);
+  return new THREE.PerspectiveCamera(BASE_FOV, innerWidth / innerHeight, 0.05, 40);
 }
 
 function createMaterials(renderer) {

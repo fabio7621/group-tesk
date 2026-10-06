@@ -4,6 +4,14 @@
   --ui: #e6ebf2;
   --panel: rgba(14, 19, 30, .62);
   --panel-border: rgba(143, 220, 255, .22);
+  --gap-x: 20px;
+  --gap-top: 20px;
+  --gap-bottom: 28px;
+  /* 瀏海、圓角、Home 條：取設計間距和 safe-area 較大者 */
+  --top: max(var(--gap-top), env(safe-area-inset-top));
+  --left: max(var(--gap-x), env(safe-area-inset-left));
+  --right: max(var(--gap-x), env(safe-area-inset-right));
+  --bottom: max(var(--gap-bottom), env(safe-area-inset-bottom));
 }
 
 html,
@@ -18,6 +26,7 @@ body {
 
 canvas {
   display: block;
+  touch-action: manipulation;
 }
 
 button:focus-visible {
@@ -29,11 +38,11 @@ button:focus-visible {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 28px;
+  bottom: var(--bottom);
   display: flex;
   justify-content: center;
   pointer-events: none;
-  padding: 0 16px;
+  padding: 0 var(--right) 0 var(--left);
 }
 
 .msg {
@@ -55,7 +64,7 @@ button:focus-visible {
 .progress,
 .sound {
   position: fixed;
-  top: 20px;
+  top: var(--top);
   border-radius: 999px;
   border: 1px solid var(--panel-border);
   background: var(--panel);
@@ -66,7 +75,7 @@ button:focus-visible {
 }
 
 .back {
-  left: 20px;
+  left: var(--left);
   padding: 8px 18px;
   cursor: pointer;
   font: inherit;
@@ -74,11 +83,13 @@ button:focus-visible {
   transition: background .2s, border-color .2s, transform .2s;
 }
 
-.back:hover,
-.sound:hover {
-  background: rgba(30, 42, 62, .8);
-  border-color: rgba(143, 220, 255, .5);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .back:hover,
+  .sound:hover {
+    background: rgba(30, 42, 62, .8);
+    border-color: rgba(143, 220, 255, .5);
+    transform: translateY(-1px);
+  }
 }
 
 .back::before {
@@ -87,7 +98,7 @@ button:focus-visible {
 }
 
 .progress {
-  right: 20px;
+  right: var(--right);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -115,8 +126,8 @@ button:focus-visible {
 
 .sound-control {
   position: fixed;
-  right: 20px;
-  bottom: 28px;
+  right: var(--right);
+  bottom: var(--bottom);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -211,27 +222,36 @@ body[data-view="room"] .back {
   display: none;
 }
 
-@media (max-width: 480px) {
+/* 觸控裝置：按鈕至少 44px 高，手指好點 */
+@media (pointer: coarse) {
   .back,
-  .progress {
-    top: 14px;
+  .sound {
+    min-height: 44px;
   }
+}
 
-  .back {
-    left: 16px;
+/* 手機直向：提示訊息會變寬甚至換行，聲音按鈕移到右上角進度列下方，面板往下展開 */
+@media (max-width: 640px) {
+  :root {
+    --gap-x: 16px;
+    --gap-top: 14px;
+    --gap-bottom: 20px;
   }
 
   .sound-control {
-    right: 16px;
-    bottom: 76px;
+    top: calc(var(--top) + 52px);
+    bottom: auto;
+    flex-direction: column-reverse;
   }
 
-  .progress {
-    right: 16px;
+  .sound-panel {
+    width: min(240px, calc(100vw - var(--left) - var(--right)));
+    box-sizing: border-box;
   }
 
   .msg {
     font-size: 14px;
     padding: 10px 16px;
+    border-radius: 18px;
   }
 }

@@ -109,8 +109,7 @@ function addNavigationControls(ui) {
 
 function addResizeHandler(sceneParts) {
   addEventListener('resize', () => {
-    sceneParts.camera.aspect = innerWidth / innerHeight;
-    sceneParts.camera.updateProjectionMatrix();
+    fitCameraToViewport(sceneParts.camera);
     sceneParts.renderer.setSize(innerWidth, innerHeight);
     sceneParts.postfx.setSize(innerWidth, innerHeight);
   });
